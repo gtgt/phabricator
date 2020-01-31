@@ -39,7 +39,7 @@ services:
     ports:
       - 3366:3306
     environment:
-      MYSQL_ROOT_PASSWORD: Iesu8Withahdeeg1
+      MYSQL_ROOT_PASSWORD: waGui2avohmaiqu0
     network_mode: bridge
 volumes:
   config:
