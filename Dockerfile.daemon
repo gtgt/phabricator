@@ -121,6 +121,9 @@ RUN sed -i s/mangoweb\\.org/gitlab.local/ /var/www/phabricator-gitlab-auth-provi
 
 ENV PATH "$PATH:/usr/lib/git-core:/var/www/phabricator/bin"
 
+CMD config set mysql.host database
+CMD config set mysql.pass "${MYSQL_ROOT_PASSWORD}"
+
 ##### Start Daemon
 CMD phd start \
   && tail -f /var/tmp/phd/log/daemons.log

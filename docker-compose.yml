@@ -1,4 +1,7 @@
 version: '2'
+x-environment:
+  &environment
+  MYSQL_ROOT_PASSWORD: Iesu8Withahdeeg1
 services:
   phabricator:
     build: ./
@@ -8,15 +11,16 @@ services:
     volumes:
        - config:/var/www/phabricator/conf/local
        - repo:/var/repo
-       - /etc/resolv.conf:/etc/resolv.conf
+       #- /etc/resolv.conf:/etc/resolv.conf
     ports:
        - 80:80
-       - 443:443
+       #- 443:443
        - 22:22
     environment:
+      << : *environment
       GIT_SSL_NO_VERIFY: 1
     network_mode: bridge
-    depends_on:
+    links:
       - database
   daemon:
     build:
@@ -29,11 +33,13 @@ services:
     volumes:
       - config:/var/www/phabricator/conf/local
       - repo:/var/repo
-      - /etc/resolv.conf:/etc/resolv.conf
+      #- /etc/resolv.conf:/etc/resolv.conf
     environment:
+      << : *environment
       GIT_SSL_NO_VERIFY: 1
-    depends_on:
+    links:
       - database
+      - phabricator
   database:
     build:
       context: ./
@@ -47,7 +53,7 @@ services:
     ports:
       - 3366:3306
     environment:
-      MYSQL_ROOT_PASSWORD: Iesu8Withahdeeg1
+      << : *environment
     network_mode: bridge
 volumes:
   config:
