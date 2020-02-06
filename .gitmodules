@@ -7,3 +7,6 @@
 [submodule "phabricator"]
 	path = phabricator
 	url = https://github.com/phacility/phabricator.git
+[submodule "phabricator-gitlab-auth-provider"]
+	path = phabricator-gitlab-auth-provider
+	url = https://github.com/manGoweb/phabricator-gitlab-auth-provider.git

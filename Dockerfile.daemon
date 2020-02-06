@@ -15,6 +15,8 @@ RUN apt-get update \
     python3-pygments \
     imagemagick \
     procps \
+    sudo \
+    nano bind9-host inetutils-ping \
   && rm -rf /var/lib/apt/lists/*
 
 # install the PHP extensions we need
@@ -102,13 +104,22 @@ RUN mkdir -p /var/tmp/phd/log/ \
   && touch /var/tmp/phd/log/daemons.log
 ##### End Daemon
 
-COPY ./ /var/www
+RUN groupadd -g99 git
+RUN useradd -M -g99 -d/var/repo -s/bin/sh -u99 -pNP git
+RUN mkdir /home/daemon
+RUN chown daemon:daemon /home/daemon
+RUN usermod -d/home/daemon daemon
+RUN sudo -udaemon git config --global http.sslverify false
+
+COPY ./ /var/www/
 
 WORKDIR /var/www
 
 RUN git submodule update --init --recursive
 
-ENV PATH "$PATH:/var/www/phabricator/bin"
+RUN sed -i s/mangoweb\\.org/gitlab.local/ /var/www/phabricator-gitlab-auth-provider/src/oauth/PhutilGitlabAuthAdapter.php
+
+ENV PATH "$PATH:/usr/lib/git-core:/var/www/phabricator/bin"
 
 ##### Start Daemon
 CMD phd start \

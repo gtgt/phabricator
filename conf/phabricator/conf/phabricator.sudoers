@@ -1,0 +1,2 @@
+www-data ALL=(daemon) SETENV: NOPASSWD: /usr/lib/git-core/git-http-backend, /usr/bin/git-http-backend, /usr/bin/ssh
+git ALL=(daemon) SETENV: NOPASSWD: /usr/lib/git-core/*, /usr/bin/git-upload-pack, /usr/bin/git-receive-pack, /usr/bin/git-lfs-authenticate, /usr/bin/ssh, /var/www/phabricator/bin/conduit

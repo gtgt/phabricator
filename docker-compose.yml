@@ -8,11 +8,13 @@ services:
     volumes:
        - config:/var/www/phabricator/conf/local
        - repo:/var/repo
-       - /etc/resolv.conf.docker:/etc/resolv.conf
+       - /etc/resolv.conf:/etc/resolv.conf
     ports:
        - 80:80
        - 443:443
        - 22:22
+    environment:
+      GIT_SSL_NO_VERIFY: 1
     network_mode: bridge
     depends_on:
       - database
@@ -28,18 +30,25 @@ services:
     volumes:
       - config:/var/www/phabricator/conf/local
       - repo:/var/repo
+      - /etc/resolv.conf:/etc/resolv.conf
+    environment:
+      GIT_SSL_NO_VERIFY: 1
     depends_on:
       - database
   database:
-    image: mariadb:latest
+    build:
+      context: ./
+      dockerfile: Dockerfile.database
+    image: phabricator/database
     container_name: phabricator_db
+    restart: unless-stopped
     volumes:
       - dbconfig:/etc/mysql
       - dbdata:/var/lib/mysql
     ports:
       - 3366:3306
     environment:
-      MYSQL_ROOT_PASSWORD: waGui2avohmaiqu0
+      MYSQL_ROOT_PASSWORD: Iesu8Withahdeeg1
     network_mode: bridge
 volumes:
   config:

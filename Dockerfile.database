@@ -1,0 +1,2 @@
+FROM mariadb:latest
+COPY ./conf/mariadb/phabricator.cnf /etc/mysql/conf.d/phabricator.cnf

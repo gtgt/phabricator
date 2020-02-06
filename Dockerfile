@@ -15,6 +15,8 @@ RUN apt-get update \
     python3-pygments \
     imagemagick \
     procps \
+    sudo openssh-server \
+    nano bind9-host inetutils-ping \
   && rm -rf /var/lib/apt/lists/*
 
 # install the PHP extensions we need
@@ -69,6 +71,8 @@ RUN set -ex; \
 RUN pecl channel-update pecl.php.net \
   && pecl install apcu \
   && docker-php-ext-enable apcu
+RUN pecl install xdebug \
+  && docker-php-ext-enable xdebug
 
 # set recommended PHP.ini settings
 # see https://secure.php.net/manual/en/opcache.installation.php
@@ -84,13 +88,13 @@ RUN { \
 
 # Set the default timezone.
 RUN { \
-        echo 'date.timezone="UTC"'; \
+        echo 'date.timezone="CET"'; \
     } > /usr/local/etc/php/conf.d/timezone.ini
 
 # File Uploads
 RUN { \
-        echo 'post_max_size=32M'; \
-        echo 'upload_max_filesize=32M'; \
+        echo 'post_max_size=256M'; \
+        echo 'upload_max_filesize=256M'; \
     } > /usr/local/etc/php/conf.d/uploads.ini
 
 # Repository Folder.
@@ -109,10 +113,24 @@ RUN { \
     } > /etc/apache2/sites-available/000-default.conf
 ##### End Phabricator
 
-COPY ./ /var/www
+RUN groupadd -g99 git
+RUN useradd -M -g99 -d/var/repo -s/bin/sh -u99 -pNP git
+RUN mkdir /home/daemon
+RUN chown daemon:daemon /home/daemon
+RUN usermod -d /home/daemon daemon
+RUN sudo -udaemon git config --global http.sslverify false
 
-WORKDIR /var/www
+COPY ./ /var/www/
 
 RUN git submodule update --init --recursive
 
-ENV PATH "$PATH:/var/www/phabricator/bin"
+COPY ./conf/phabricator /var/www/phabricator/conf/local
+
+RUN sed -i s/mangoweb\\.org/gitlab.local/ /var/www/phabricator-gitlab-auth-provider/src/oauth/PhutilGitlabAuthAdapter.php
+
+RUN ln -sf /var/www/phabricator/conf/local/sshd_config.phabricator /etc/ssh/sshd_config
+RUN ln -sf /var/www/phabricator/conf/local/phabricator.sudoers /etc/sudoers.d/phabricator
+
+ENV PATH "$PATH:/usr/lib/git-core:/var/www/phabricator/bin"
+
+CMD service sshd start && apache2-foreground
