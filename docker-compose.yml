@@ -2,7 +2,7 @@ version: '2'
 services:
   phabricator:
     build: ./
-    image: phabricator/phabricator
+    image: gtgt/phabricator
     container_name: phabricator
     restart: unless-stopped
     volumes:
@@ -18,12 +18,11 @@ services:
     network_mode: bridge
     depends_on:
       - database
-      - daemon
   daemon:
     build:
       context: ./
       dockerfile: Dockerfile.daemon
-    image: phabricator/daemon
+    image: gtgt/phabricator-daemon
     container_name: phabricator_daemon
     restart: unless-stopped
     network_mode: bridge
@@ -39,7 +38,7 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile.database
-    image: phabricator/database
+    image: gtgt/phabricator-database
     container_name: phabricator_db
     restart: unless-stopped
     volumes:
