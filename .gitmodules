@@ -10,3 +10,9 @@
 [submodule "phabricator-gitlab-auth-provider"]
 	path = phabricator-gitlab-auth-provider
 	url = https://github.com/manGoweb/phabricator-gitlab-auth-provider.git
+[submodule "phabricator-translations"]
+	path = phabricator-translations
+	url = https://github.com/wikimedia/phabricator-translations.git
+[submodule "phabricator-rest-sso-auth"]
+	path = phabricator-rest-sso-auth
+	url = git@github.com:gtgt/phabricator-rest-sso-auth.git

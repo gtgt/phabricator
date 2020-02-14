@@ -133,7 +133,7 @@ RUN ln -sf /var/www/phabricator/conf/local/phabricator.sudoers /etc/sudoers.d/ph
 
 ENV PATH "$PATH:/usr/lib/git-core:/var/www/phabricator/bin"
 
-CMD config set mysql.host database
-CMD config set mysql.pass "${MYSQL_ROOT_PASSWORD}"
-
-CMD service ssh start && apache2-foreground
+CMD config set mysql.host database; \
+    config set mysql.pass "${MYSQL_ROOT_PASSWORD}"; \
+    service ssh start && \
+    apache2-foreground;
